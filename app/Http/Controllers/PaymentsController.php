@@ -37,14 +37,10 @@ class PaymentsController extends Controller
 
     	$initiate=self::curlPost($url, $body);
     	if($initiate["status"]=="success"){
-    		$response=[
-    			'status'=200,
-    			'message'=>'charge initiated',
-    			'data'=>$initiate
-    		];
+    		$response=$initiate;
     	}else{
     		$response=[
-    			'status'=400,
+    			'status'=>400,
     			'message'=>'charge initialization failed',
     			'data'=>'something went wrong'
     		];
@@ -58,8 +54,17 @@ class PaymentsController extends Controller
     		'otp'=>$request->otp,
     		'flw_ref'=>$request->flw_ref
     	];
-    	return self::curlPost($url, $body);
+    	$validate=self::curlPost($url, $body);
+    	//return $validate['status'];
+    	if($validate["status"]=="success"){
+    		self::log($validate);
+    		return $validate;
+    	}
 
+    	return [
+    		'status'=>400,
+    		'message'=>'something went wrong'
+    	];
     }
 
     //flutter encryption
@@ -79,5 +84,15 @@ class PaymentsController extends Controller
  			return var_dump($e);
  		}
  		
+ 	}
+
+ 	public function log($validate){
+ 		$customer=Customers::where('email', $validate['data']['customer']['email'])->get()->first();
+ 		$log=new CustomerTransactionsLog();
+ 		$log->customer_id=$customer->id;
+ 		$log->amount=$validate['data']['amount'];
+ 		$log->ref=$validate['data']['flw_ref'];
+ 		$log->description=$validate['message'];
+ 		$log->save();
  	}
 }
