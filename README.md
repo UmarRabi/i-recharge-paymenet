@@ -14,4 +14,10 @@ riutes
     method : psot
     description : create a card and tie it to a customer record
     
+    {{domain}}api/payments/checkout/{id} //the id on the path is the card id, the card_id can be gotten via the api/customer/get/{id} end point
+    method : post
+    description : initiate flutterwave card checkout, only the amount to charge is required in the request body
+    
+    
+    
     
