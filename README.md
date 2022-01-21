@@ -16,7 +16,11 @@ riutes
     
     {{domain}}api/payments/checkout/{id} //the id on the path is the card id, the card_id can be gotten via the api/customer/get/{id} end point
     method : post
-    description : initiate flutterwave card checkout, only the amount to charge is required in the request body
+    description : initiate flutterwave card checkout, only the amount to charge is required in the request body it contains the flw_ref which is added to the validate endpoint request body together with the otp
+    
+    {{domain}}api/payments/validate
+    method : post
+    description : validate flutterwave payment. the request body contains the flw_ref and otp
     
     
     
